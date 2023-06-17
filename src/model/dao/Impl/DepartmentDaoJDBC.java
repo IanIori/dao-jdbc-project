@@ -12,7 +12,6 @@ import db.DB;
 import db.DbException;
 import model.dao.DepartmentDao;
 import model.entities.Department;
-import model.entities.Seller;
 
 public class DepartmentDaoJDBC implements DepartmentDao{
 
@@ -94,14 +93,16 @@ public class DepartmentDaoJDBC implements DepartmentDao{
 		PreparedStatement st = null;
 		ResultSet rs = null;
 		try {
-			st = conn.prepareStatement("SELECT department.* FROM department WHERE department.Id = ? ORDER BY Name");
+			st = conn.prepareStatement("SELECT * FROM department WHERE Id = ?");
 			
 			st.setInt(1, id);
 			
 			rs = st.executeQuery();
 			
 			if (rs.next()) {
-				Department dep = instantiateDepartment(rs);
+				Department dep = new Department();
+				dep.setId(rs.getInt("Id"));
+				dep.setName(rs.getString("Name"));
 				return dep;
 			}
 			return null;
@@ -112,28 +113,22 @@ public class DepartmentDaoJDBC implements DepartmentDao{
 			DB.closeResultSet(rs);
 		}
 	}
-	
-	private Department instantiateDepartment(ResultSet rs) throws SQLException {
-		Department dep = new Department();
-		dep.setId(rs.getInt("department.Id"));
-		dep.setName(rs.getString("department.Name"));
-		return dep;
-	}
 
 	@Override
 	public List<Department> findAll() {
 		PreparedStatement st = null;
 		ResultSet rs = null;
 		try {
-			st = conn.prepareStatement("SELECT department.* FROM department ORDER BY Id");
+			st = conn.prepareStatement("SELECT * FROM department ORDER BY Name");
 			
 			rs = st.executeQuery();
 			
 			List<Department> list = new ArrayList<>();
 			
-			
 			while (rs.next()) {
-				Department dep = instantiateDepartment(rs);
+				Department dep = new Department();
+				dep.setId(rs.getInt("Id"));
+				dep.setName(rs.getString("Name"));
 				list.add(dep);
 			}
 			return list;

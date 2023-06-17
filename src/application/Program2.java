@@ -40,6 +40,7 @@ public class Program2 {
 		departmentDao.deleteById(id);
 		System.out.println("Department " + id + " deleted!");
 		
+		sc.close();
 	}
 
 }
